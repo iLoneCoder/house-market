@@ -23,9 +23,9 @@ function Navbar() {
                         <OfferIcon fill={checkLocation("/offer") ? "#2c2c2c" : "#8f8f8f"} />
                         <p className={checkLocation("/offer") ? "navbarListItemNameActive" : "navbarListItemName"}>Offer</p>
                     </li>
-                    <li className="navbarListItem" onClick={e => navigate("/sign-in")}>
-                        <ProfileIcon fill={checkLocation("/sign-in") ? "#2c2c2c" : "#8f8f8f"} />
-                        <p className={checkLocation("/sign-in") ? "navbarListItemNameActive" : "navbarListItemName"} >Profile</p>
+                    <li className="navbarListItem" onClick={e => navigate("/profile")}>
+                        <ProfileIcon fill={checkLocation("/profile") ? "#2c2c2c" : "#8f8f8f"} />
+                        <p className={checkLocation("/profile") ? "navbarListItemNameActive" : "navbarListItemName"} >Profile</p>
                     </li>
                 </ul>
             </nav>
