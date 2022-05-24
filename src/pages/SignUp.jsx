@@ -5,6 +5,8 @@ import visibilityIcon from "../assets/svg/visibilityIcon.svg";
 import { db } from "../firebase.config";
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc, Timestamp } from "firebase/firestore"
+import  OAuth  from "../components/OAuth"
+
 function SignUp() {
     const [showPassword, setShowPassword] = useState(false);
     const [userData, setUserData] = useState({
@@ -71,6 +73,9 @@ function SignUp() {
                 </p>
                 <button type="submit" className="signUpButton"><ArrowIcon /></button>
             </div>
+
+            <OAuth />
+
         </form>
         <Link to="/sign-in" className="signUpInstead">
             sign in instead
