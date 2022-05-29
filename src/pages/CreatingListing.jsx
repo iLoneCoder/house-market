@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { getAuth } from "firebase/auth";
 import { toast } from "react-toastify";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-
+import { v4 as uuidv4 } from "uuid";
 function CreatingListing() {
     const auth = getAuth();
 
@@ -25,7 +25,7 @@ function CreatingListing() {
     });
 
     const { type, name, bedrooms, bathrooms, parking, furnished, address, offer,
-        regularPrice, discountedPrice, latitude, longitude } = formData;
+        regularPrice, discountedPrice, images, latitude, longitude } = formData;
     const isMounted = useRef(true);
     useEffect(() => {
         if (isMounted) {
@@ -38,7 +38,7 @@ function CreatingListing() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        console.log(formData);
         if (discountedPrice > regularPrice) {
             toast.error("discounted price must be less than regular price");
             return;
@@ -47,7 +47,7 @@ function CreatingListing() {
         let geoLocation = {};
         let location;
         if (geoLocationEnabled) {
-            const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyBDP0kMd9KA4b5KyQqWfatSQ36XlNUZDUI`)
+            const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`)
             const data = await response.json();
 
             if (data.status === "REQUEST_DENIED") {
@@ -60,10 +60,53 @@ function CreatingListing() {
             location = address;
         }
 
-        const storeImage = new Promise((resolve, reject) => {
-            const storage = getStorage();
-            const fileName = 
-        })
+        if (images.length > 6) {
+            toast.error("Max image number is 6");
+            return;
+        }
+
+        const storeImage = (image) => {
+            return new Promise((resolve, reject) => {
+                const storage = getStorage();
+                const fileName = "images/" + image.name + uuidv4();
+                const storageRef = ref(storage, fileName);
+
+                const uploadTask = uploadBytesResumable(storageRef, image);
+
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        // const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        // console.log('Upload is ' + progress + '% done');
+                        // switch (snapshot.state) {
+                        //     case 'paused':
+                        //         // console.log('Upload is paused');
+                        //         break;
+                        //     case 'running':
+                        //         // console.log('Upload is running');
+                        //         break;
+                        // }
+                    },
+                    (error) => {
+                        reject(error);
+                    },
+                    () => {
+                        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                            resolve(downloadURL);
+                        });
+                    }
+                );
+            })
+        }
+
+        const imageUrls = await Promise.all([...images].map(async (image) => {
+            try {
+                return await storeImage(image);
+            } catch (err) {
+                return console.log(err);
+            }
+        }))
+
+        console.log(imageUrls);
     }
 
     const handleChange = (e) => {
