@@ -2,7 +2,9 @@ import { useState } from "react";
 import { getAuth, signOut, updateProfile } from "firebase/auth";
 import { updateDoc, doc } from "firebase/firestore";
 import { db } from "../firebase.config";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import homeIcon from "../assets/svg/homeIcon.svg";
+import rightArrowIcon from "../assets/svg/keyboardArrowRightIcon.svg"
 
 function Profile() {
     const auth = getAuth();
@@ -72,6 +74,13 @@ function Profile() {
                 <input type="email" className="profileEmail" id="email" value={email} readOnly />
             </div>
         </div>
+
+        <Link to="/create-listing" className="createListing">
+            <img src={homeIcon} alt="" />
+            <button type="button" className="createListingButton">Create your own listing</button>
+            <img src={rightArrowIcon} alt="" />
+        </Link>
+
 
     </div> : <h1>not logged in</h1>
 }
