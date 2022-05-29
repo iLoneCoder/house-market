@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { getAuth } from "firebase/auth";
+import { toast } from "react-toastify";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 function CreatingListing() {
     const auth = getAuth();
@@ -34,9 +36,34 @@ function CreatingListing() {
     }, [isMounted])
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
+
+        if (discountedPrice > regularPrice) {
+            toast.error("discounted price must be less than regular price");
+            return;
+        }
+
+        let geoLocation = {};
+        let location;
+        if (geoLocationEnabled) {
+            const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyBDP0kMd9KA4b5KyQqWfatSQ36XlNUZDUI`)
+            const data = await response.json();
+
+            if (data.status === "REQUEST_DENIED") {
+                toast.error("This feature isn't added yet. Please type geolocation manually");
+                return;
+            }
+        } else {
+            geoLocation.lat = latitude;
+            geoLocation.lng = longitude;
+            location = address;
+        }
+
+        const storeImage = new Promise((resolve, reject) => {
+            const storage = getStorage();
+            const fileName = 
+        })
     }
 
     const handleChange = (e) => {

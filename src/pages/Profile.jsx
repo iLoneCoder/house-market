@@ -77,7 +77,8 @@ function Profile() {
 
         <Link to="/create-listing" className="createListing">
             <img src={homeIcon} alt="" />
-            <button type="button" className="createListingButton">Create your own listing</button>
+            {/* <button type="button" className="createListingButton">Create your own listing</button> */}
+            <p className="createListingButton">create listing page</p>
             <img src={rightArrowIcon} alt="" />
         </Link>
 
