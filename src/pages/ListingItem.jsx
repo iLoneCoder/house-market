@@ -1,4 +1,5 @@
 import PropTypes from "prop-types"
+import { Link } from "react-router-dom"
 import bedIcon from "../assets/svg/bedIcon.svg"
 import bathtubIcon from "../assets/svg/bathtubIcon.svg"
 function ListingItem({ id, data }) {
@@ -7,10 +8,13 @@ function ListingItem({ id, data }) {
     // }, [])
 
     return <div className="categoryListing">
+
         <img src={data.imageUrls[0]} alt="" className="categoryListingImg" />
+
+
         <div className="categoryListingDetails">
             <p className="categoryListingLocation">{data.location}</p>
-            <p className="categoryListingName">{data.name}</p>
+            <Link to="/" className="categoryListingName">{data.name}</Link>
             <p className="categoryListingPrice">  {data.discountedPrice} / Month </p>
             <div className="categoryListingInfoDiv">
 

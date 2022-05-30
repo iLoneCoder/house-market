@@ -2,11 +2,17 @@ import { useEffect, useState, useRef } from "react";
 import { getAuth } from "firebase/auth";
 import { toast } from "react-toastify";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { addDoc, collection, Timestamp } from "firebase/firestore";
+import { db } from "../firebase.config";
 import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from "react-router-dom";
+import Spinner from "../components/Spinner";
+
 function CreatingListing() {
     const auth = getAuth();
-
+    const [loading, setLoading] = useState(false);
     const [geoLocationEnabled, setGeoLocationEnabled] = useState(false);
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         type: "rent",
         name: "",
@@ -38,7 +44,7 @@ function CreatingListing() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
+
         if (discountedPrice > regularPrice) {
             toast.error("discounted price must be less than regular price");
             return;
@@ -47,9 +53,10 @@ function CreatingListing() {
         let geoLocation = {};
         let location;
         if (geoLocationEnabled) {
+            setLoading(true);
             const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`)
             const data = await response.json();
-
+            setLoading(false);
             if (data.status === "REQUEST_DENIED") {
                 toast.error("This feature isn't added yet. Please type geolocation manually");
                 return;
@@ -106,7 +113,27 @@ function CreatingListing() {
             }
         }))
 
-        console.log(imageUrls);
+        // console.log(imageUrls);
+        const filestoreData = { ...formData };
+        filestoreData.geoLocation = geoLocation;
+        filestoreData.location = location;
+        filestoreData.imageUrls = imageUrls;
+        filestoreData.timestamp = Timestamp.fromDate(new Date());
+
+        if (!offer) {
+            console.log(offer);
+            delete filestoreData.discountedPrice;
+        }
+        delete filestoreData.address;
+        delete filestoreData.images;
+
+        console.log(filestoreData);
+        const docRef = collection(db, "listings")
+        setLoading(true);
+        await addDoc(docRef, filestoreData);
+        setLoading(false);
+        setGeoLocationEnabled(false);
+        navigate("/");
     }
 
     const handleChange = (e) => {
@@ -133,6 +160,10 @@ function CreatingListing() {
                 [e.target.id]: bool ?? e.target.value
             }))
         }
+    }
+
+    if (loading) {
+        return <Spinner />
     }
 
     return <div className="profile">
