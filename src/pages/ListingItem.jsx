@@ -14,7 +14,7 @@ function ListingItem({ id, data }) {
 
         <div className="categoryListingDetails">
             <p className="categoryListingLocation">{data.location}</p>
-            <Link to="/" className="categoryListingName">{data.name}</Link>
+            <Link to={`/`} className="categoryListingName">{data.name}</Link>
             <p className="categoryListingPrice">  {data.discountedPrice} / Month </p>
             <div className="categoryListingInfoDiv">
 
