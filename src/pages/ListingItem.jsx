@@ -14,7 +14,7 @@ function ListingItem({ id, data }) {
 
         <div className="categoryListingDetails">
             <p className="categoryListingLocation">{data.location}</p>
-            <Link to={`/`} className="categoryListingName">{data.name}</Link>
+            <Link to={`/category/${data.type}/${id}`} className="categoryListingName">{data.name}</Link>
             <p className="categoryListingPrice">  {data.discountedPrice} / Month </p>
             <div className="categoryListingInfoDiv">
 
@@ -24,6 +24,7 @@ function ListingItem({ id, data }) {
                 <img src={bathtubIcon} alt="" />
                 <p className="">{data.bedrooms > 1 ? "bathrooms" : "bathroom"}</p>
 
+              
             </div>
         </div>
 
