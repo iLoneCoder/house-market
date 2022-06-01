@@ -6,7 +6,10 @@ import { Link, useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify"
 import shareIcon from "../assets/svg/shareIcon.svg";
-
+import { MapContainer, TileLayer, Marker, Popup, } from "react-leaflet"
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper"
+import { Swiper, SwiperSlide } from "swiper/react"
+import 'swiper/css';
 function Listing() {
     const [loading, setLoading] = useState(true);
     const [listing, setListing] = useState(null);
@@ -35,8 +38,27 @@ function Listing() {
         return <Spinner />
     }
 
+    // const position = [51.505, -0.09]
+
     return <main>
-        {/* slider */}
+        <div className="swiper-container">
+            {/* <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]}
+               
+                slidesPerView={1}
+              
+                pagination={{ clickable: true }}
+                scrollbar={{ draggable: true }}
+                onSwiper={(swiper) => console.log(swiper)}
+                onSlideChange={() => console.log('slide change')}>
+                {listing.imageUrls.map((url, index) => {
+                  return  <SwiperSlide key={index}>
+                        <div style={{background: `url(${url}) center no-repeat`}} className="swiperSlideDiv"></div>
+                    </SwiperSlide>
+                })}
+            </Swiper> */}
+
+            <div style={{ background: `url(${listing.imageUrls[0]}) center no-repeat` }} className="swiperSlideDiv"></div>
+        </div>
         <div className="profile" >
             <p className="pageHeader">Item of {listing.type}</p>
             <div className="listingDetails" onClick={() => {
@@ -65,11 +87,25 @@ function Listing() {
 
                 <p className="listingLocationTitle">Geolocation</p>
 
+                <div className="leafletContainer">
+                    <MapContainer style={{ widht: "100%", height: "100%" }} center={[listing?.geolocation.lat, listing?.geolocation.lng]} zoom={13} scrollWheelZoom={false}>
+                        <TileLayer
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
+                        <Marker position={[listing?.geolocation.lat, listing?.geolocation.lng]}>
+                            <Popup>
+                                {listing?.location}
+                            </Popup>
+                        </Marker>
+                    </MapContainer>
+                </div>
+
                 {listing.userRef !== auth.currentUser?.uid &&
                     <Link to={`/contact/${listing.userRef}?listingName=${listing.name}`} className="primaryButton"> Contact Landlord</Link>}
             </div>
         </div>
-    </main>
+    </main >
 }
 
 export default Listing;
