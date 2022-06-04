@@ -2,6 +2,8 @@ import PropTypes from "prop-types"
 import { Link } from "react-router-dom"
 import bedIcon from "../assets/svg/bedIcon.svg"
 import bathtubIcon from "../assets/svg/bathtubIcon.svg"
+// import { useEffect } from "react"
+
 function ListingItem({ id, data }) {
     // useEffect(() => {
     //     console.log(data);
@@ -19,12 +21,12 @@ function ListingItem({ id, data }) {
             <div className="categoryListingInfoDiv">
 
                 <img src={bedIcon} alt="" />
-                <p className="">{data.bedrooms > 1 ? "bedrooms" : "bedroom"}</p>
+                <p className="">{data.bedrooms > 1 ? "bedrooms:" : "bedroom:"} {data.bedrooms}</p>
 
                 <img src={bathtubIcon} alt="" />
-                <p className="">{data.bedrooms > 1 ? "bathrooms" : "bathroom"}</p>
+                <p className="">{data.bathrooms > 1 ? "bathrooms:" : "bathroom:"} {data.bathrooms}</p>
 
-              
+
             </div>
         </div>
 

@@ -115,7 +115,7 @@ function CreatingListing() {
 
         // console.log(imageUrls);
         const filestoreData = { ...formData };
-        filestoreData.geoLocation = geoLocation;
+        filestoreData.geolocation = geoLocation;
         filestoreData.location = location;
         filestoreData.imageUrls = imageUrls;
         filestoreData.timestamp = Timestamp.fromDate(new Date());

@@ -9,7 +9,9 @@ import shareIcon from "../assets/svg/shareIcon.svg";
 import { MapContainer, TileLayer, Marker, Popup, } from "react-leaflet"
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper"
 import { Swiper, SwiperSlide } from "swiper/react"
-import 'swiper/css';
+import "swiper/css/bundle"
+// import 'swiper/css'
+
 function Listing() {
     const [loading, setLoading] = useState(true);
     const [listing, setListing] = useState(null);
@@ -38,26 +40,27 @@ function Listing() {
         return <Spinner />
     }
 
-    // const position = [51.505, -0.09]
 
     return <main>
         <div className="swiper-container">
-            {/* <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]}
-               
+            <Swiper
                 slidesPerView={1}
-              
-                pagination={{ clickable: true }}
-                scrollbar={{ draggable: true }}
+                onSlideChange={() => console.log('slide change')}
                 onSwiper={(swiper) => console.log(swiper)}
-                onSlideChange={() => console.log('slide change')}>
+                className="swiper-container"
+                pagination={{ clickable: true }}
+                modules={[Navigation, Pagination, Scrollbar, A11y]}
+            >
                 {listing.imageUrls.map((url, index) => {
-                  return  <SwiperSlide key={index}>
-                        <div style={{background: `url(${url}) center no-repeat`}} className="swiperSlideDiv"></div>
+                    return <SwiperSlide key={index}>
+                        <div style={{ background: `url("${url}") center no-repeat`, backgroundSize: "cover" }} className="swiperSlideDiv">
+                        </div>
                     </SwiperSlide>
                 })}
-            </Swiper> */}
 
-            <div style={{ background: `url(${listing.imageUrls[0]}) center no-repeat` }} className="swiperSlideDiv"></div>
+
+            </Swiper>
+
         </div>
         <div className="profile" >
             <p className="pageHeader">Item of {listing.type}</p>
