@@ -1,15 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getAuth, signOut, updateProfile } from "firebase/auth";
-import { updateDoc, doc } from "firebase/firestore";
+import { updateDoc, doc, query, where, limit, collection, orderBy, getDocs, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase.config";
 import { useNavigate, Link } from "react-router-dom";
 import homeIcon from "../assets/svg/homeIcon.svg";
 import rightArrowIcon from "../assets/svg/keyboardArrowRightIcon.svg"
+import ListingItem from "./ListingItem";
+import Spinner from "../components/Spinner";
+import { toast } from "react-toastify";
 
 function Profile() {
     const auth = getAuth();
     const curUser = auth.currentUser;
     const navigate = useNavigate();
+    const [listings, setListings] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(false);
     const [formData, setFormData] = useState({
         name: curUser.displayName,
@@ -17,6 +22,27 @@ function Profile() {
     })
 
     const { name, email } = formData;
+
+    useEffect(() => {
+        const fetchListings = async () => {
+            const docRef = collection(db, "listings");
+            const q = query(docRef, where("userRef", "==", curUser.uid, orderBy("timestamp", "desc"), limit(10)));
+
+            const listingsSnap = await getDocs(q);
+            const listings = [];
+            listingsSnap.forEach((listing) => {
+                return listings.push({
+                    id: listing.id,
+                    data: listing.data()
+                })
+            })
+
+            setListings(listings);
+            setLoading(false);
+        }
+
+        fetchListings();
+    }, [curUser.uid])
 
     const handleLogout = async () => {
         try {
@@ -57,6 +83,26 @@ function Profile() {
         }))
     }
 
+    const onDelete = async (listingId) => {
+        try {
+            if (window.confirm("Do you want to delete listing ?")) {
+                await deleteDoc(doc(db, "listings", listingId))
+                toast.success("listing was Deleted!")
+
+                const updatedListing = listings.filter(listing => toString(listing.uid) !== toString(listingId));
+                // console.log(updatedListing);
+                setListings(updatedListing);
+                setLoading(false);
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    if (loading) {
+        return <Spinner />
+    }
+
     return curUser !== null ? <div className="profile">
         <div className="profileHeader">
             <h1>Logged in</h1>
@@ -82,6 +128,11 @@ function Profile() {
             <img src={rightArrowIcon} alt="" />
         </Link>
 
+        <div style={{ marginTop: "15px" }} className="categoryListings">
+            {listings?.map((listing) => {
+                return <ListingItem key={listing.id} id={listing.id} data={listing.data} onDelete={() => onDelete(listing.id)} />
+            })}
+        </div>
 
     </div> : <h1>not logged in</h1>
 }

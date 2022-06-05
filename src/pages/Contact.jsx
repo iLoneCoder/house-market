@@ -48,7 +48,7 @@ function Contact() {
                 </form>
             </div>
 
-            <a href={`mailto:${landlord?.email}?subject=${searchParams?.listingName}&body=${text}`} className="primaryButton">Send Email</a>
+            <a  href={`mailto:${landlord?.email}?subject=${searchParams?.listingName}&body=${text}`} className="primaryButton">Send Email</a>
 
 
 
